@@ -22,19 +22,19 @@ public class RagController {
     }
 
     @GetMapping("/chat")
-    public String chat(@RequestParam String query) {
+    public String chat(@RequestParam(value = "query", defaultValue = "Give me a list of all companies which Behrooz had experience with them.") String query) {
         return chatClient.prompt()
                 .user(query)
                 .call()
                 .content();
     }
 
-    @GetMapping("/models")
-    public Models faq(@RequestParam(value = "message", defaultValue = "Give me a list of all the models from OpenAI along with their context window.") String message) {
-        return chatClient.prompt()
-                .user(message)
-                .call()
-                .entity(Models.class);
-    }
+//    @GetMapping("/models")
+//    public Models faq(@RequestParam(value = "message", defaultValue = "Give me a list of all the models from OpenAI along with their context window.") String message) {
+//        return chatClient.prompt()
+//                .user(message)
+//                .call()
+//                .entity(Models.class);
+//    }
 
 }

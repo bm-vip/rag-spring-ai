@@ -23,7 +23,7 @@ public class RagApplication {
 	@EventListener(ApplicationReadyEvent.class)
 	public void init() {
         try {
-            documentIngestionService.save("classpath:/pdf/spring-boot-reference.pdf");
+            documentIngestionService.save("classpath:/data/BehroozMohamadi.pdf");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

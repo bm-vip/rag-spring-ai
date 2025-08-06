@@ -1,3 +1,5 @@
+server:
+  port: 8081
 spring:
   application:
     name: rag
@@ -11,19 +13,9 @@ spring:
     vectorstore:
       milvus:
         client:
-          host: "localhost"
+          host: "172.16.16.162"
           port: 19530
           username: "root"
-          password: "milvus"
-        databaseName: "default"
-        collectionName: "vector_store"
+          password: "Milvus"
+        databaseName: "mvs"
         embeddingDimension: 1536
-
-
-# Application Configuration
-app:
-  pdf:
-    chunk-size: 1000  # Size of text chunks for embedding
-    chunk-overlap: 200  # Overlap between chunks
-  rag:
-    max-results: 5  # Maximum number of similar chunks to retrieve
