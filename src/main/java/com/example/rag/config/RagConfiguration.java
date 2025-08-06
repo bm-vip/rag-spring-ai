@@ -31,7 +31,7 @@ public class RagConfiguration {
     private Resource models;
 
     @Bean
-    SimpleVectorStore simpleVectorStore(EmbeddingModel embeddingModel) throws IOException {
+    public SimpleVectorStore simpleVectorStore(EmbeddingModel embeddingModel) throws IOException {
         var simpleVectorStore = SimpleVectorStore.builder(embeddingModel).build();
         var vectorStoreFile = getVectorStoreFile();
         if (vectorStoreFile.exists()) {

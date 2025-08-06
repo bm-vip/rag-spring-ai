@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: rag
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      model: gpt-4-o
+      embedding-model: text-embedding-ada-002
+      max-tokens: 1000
+      temperature: 0.7
+    vectorstore:
+      milvus:
+        client:
+          host: "localhost"
+          port: 19530
+          username: "root"
+          password: "milvus"
+        databaseName: "default"
+        collectionName: "vector_store"
+        embeddingDimension: 1536
+
+
+# Application Configuration
+app:
+  pdf:
+    chunk-size: 1000  # Size of text chunks for embedding
+    chunk-overlap: 200  # Overlap between chunks
+  rag:
+    max-results: 5  # Maximum number of similar chunks to retrieve
