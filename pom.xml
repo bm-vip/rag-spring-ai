@@ -61,11 +61,6 @@
 			<groupId>org.springframework.ai</groupId>
 			<artifactId>spring-ai-starter-vector-store-milvus</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>ch.helvethink.odoo4java</groupId>
-			<artifactId>java-odoo-xml-rpc-core</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

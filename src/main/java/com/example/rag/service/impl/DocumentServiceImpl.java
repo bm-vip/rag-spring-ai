@@ -1,17 +1,9 @@
 package com.example.rag.service.impl;
 
-import ch.helvethink.odoo4java.models.OdooId;
-import ch.helvethink.odoo4java.rpc.OdooObjectLoader;
-import ch.helvethink.odoo4java.xmlrpc.OdooClient;
-import com.example.rag.models.project.Project;
-import com.example.rag.models.project.ProjectTask;
-import com.example.rag.models.res.ResUsers;
-import com.example.rag.models.timesheets.analysis.TimesheetsAnalysisReport;
 import com.example.rag.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.xmlrpc.XmlRpcException;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
@@ -22,9 +14,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -124,63 +117,5 @@ public class DocumentServiceImpl implements DocumentService {
                 .build();
 
         return vectorStore.similaritySearch(searchRequest);
-    }
-
-    public static final String USERNAME = "info@tunoo.de";
-    public static final String DBNAME = "tunoo";
-    public static final String PASSWORD = "Tunoo#2025";
-    public static final String ODOO_URL = "https://crm.tunoo.de";
-    public static void main(String[] args) throws MalformedURLException, XmlRpcException {
-        OdooClient cli = new OdooClient(ODOO_URL, DBNAME, USERNAME, PASSWORD, true);
-        OdooObjectLoader loader = new OdooObjectLoader(cli);
-
-        OdooId idToFetch = new OdooId();
-        idToFetch.id = 2;
-
-        // Fetch a single Object by Odoo ID
-        Project project = cli.findObjectById(idToFetch, Project.class);
-        log.info(project.getDisplayName());
-
-        OdooId id2fetch = new OdooId();
-        id2fetch.id = 3;
-        // Fetch multiple objects by Odoo IDs
-        List<Project> projects = cli.findListByIds(Arrays.asList(idToFetch, id2fetch), Project.class);
-        log.info(projects.stream().map(pt -> pt.getDisplayName()).collect(Collectors.joining(",")));
-
-        // Fetch relationships for an odoo object, not recursively, filtering classes we want to fetch
-
-        loader.fetchRelationShips(project, Arrays.asList(ProjectTask.class, ResUsers.class));
-
-        log.info("1) Find by criteria 'equals' - {}", cli.findByCriteria(1, Project.class, "name", "=", "Sample Project").stream().map(a -> a.getName()).collect(Collectors.joining(",")));
-        log.info("2) Find by criteria 'like' - {}", cli.findByCriteria(1, Project.class, "name", "like", "%Sample%").stream().map(a -> a.getName()).collect(Collectors.joining(",")));
-        log.info("3) Find by criteria limit 1 without criterion - {}", cli.findByCriteria(1, Project.class).stream().map(a -> a.getName()).collect(Collectors.joining(",")));
-        log.info("4) Find by criteria id equals - {}", cli.findByCriteria(1, Project.class, "id", "=", "1").stream().map(a -> a.getName()).collect(Collectors.joining(",")));
-
-        // Find a list of objects using search criteria, with a limit specified - the first parameter, here 1.
-        // If no criteria is specified then everything will be fetched.
-        List<TimesheetsAnalysisReport> timesheet = cli.findByCriteria(1, TimesheetsAnalysisReport.class);
-        log.info("5) Find by criteria limit 1 without criterion - {}", timesheet.stream().map(a -> a.getName()).collect(Collectors.joining(",")));
-
-        // If 0, then will fetch all objects.
-        List<TimesheetsAnalysisReport> ts = cli.findByCriteria(0, TimesheetsAnalysisReport.class);
-        log.info("6) Find by criteria no limit without criterion - {}", ts.stream().map(a -> a.getName()).collect(Collectors.joining(",")));
-
-        // Fetch recursively with depth = 2
-        final TimesheetsAnalysisReport firstAccAnalyticLine = ts.get(ts.size() - 1);
-        System.out.println(firstAccAnalyticLine.getName());
-        loader.fetchRecursivelyRelationShips(firstAccAnalyticLine, 2, Collections.emptyList());
-        // Check that we fetched Currency Too
-        log.info(firstAccAnalyticLine.getCompanyIdAsObject().getName());
-        log.info(firstAccAnalyticLine.getCompanyIdAsObject().getCurrencyIdAsObject().getDisplayName());
-
-        // Fetch using the criterion name like %Sample%
-        List<Project> sampleProjects = cli.findByCriteria(1, Project.class, "name", "like", "%Sample%");
-        loader.fetchRelationShips(sampleProjects.get(0), Collections.emptyList());
-        log.info(sampleProjects.get(0).getTasksAsList().get(0).getDisplayName());
-
-        // Fetch using the criterion name like %Sample%
-//        sampleProjects = cli.findByCriteria(1, Project.class, "name", "like", "%Sample%");
-//        loader.fetchRelationShips(sampleProjects.getFirst(), Collections.emptyList());
-//        log.info(sampleProjects.getFirst().getTasksAsList().get(0).getDisplayName());
     }
 }
